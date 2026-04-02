@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Small Beginnings</title>
+
+  <style>
+    body { margin:0; font-family:Arial; background:#1e3c72; color:white; }
+
+    .screen { display:none; padding:20px; text-align:center; }
+    .active { display:block; }
+
+    .logo { font-size:60px; margin-top:40vh; }
+
+    input { padding:10px; width:70%; margin:5px; border-radius:10px; border:none; }
+
+    button { padding:10px; margin:5px; border:none; border-radius:10px; }
+
+    .nav {
+      position:fixed;
+      bottom:0;
+      width:100%;
+      background:white;
+      display:flex;
+    }
+
+    .nav button {
+      flex:1;
+      background:white;
+      color:#1e3c72;
+      padding:15px;
+    }
+
+    .post {
+      background:white;
+      color:black;
+      margin:10px;
+      padding:10px;
+      border-radius:10px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="screen active">
+  <div class="logo">SB</div>
+</div>
+
+<!-- SIGN IN -->
+<div id="signin" class="screen">
+  <h2>Enter Your Name</h2>
+  <input id="user"><br>
+  <button onclick="enter()">Continue</button>
+</div>
+
+<!-- HOME -->
+<div id="home" class="screen"></div>
+
+<!-- AI -->
+<div id="ai" class="screen">
+  <h2>AI Assistant</h2>
+  <input id="aiInput" placeholder="Ask anything...">
+  <button onclick="askAI()">Send</button>
+  <p id="aiOutput"></p>
+</div>
+
+<!-- COURSES -->
+<div id="courses" class="screen">
+  <h2>Courses</h2>
+  <div id="courseList"></div>
+</div>
+
+<!-- LESSON -->
+<div id="lesson" class="screen">
+  <h2 id="lessonTitle"></h2>
+  <div id="lessonText" style="height:250px; overflow:auto;"></div>
+  <button onclick="startQuiz()">Take Test</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="screen">
+  <h2 id="qTitle"></h2>
+  <input id="answer">
+  <button onclick="nextQ()">Submit</button>
+</div>
+
+<!-- COMMUNITY -->
+<div id="community" class="screen">
+  <h2>Community</h2>
+  <input id="postInput" placeholder="Share something...">
+  <button onclick="post()">Post</button>
+  <div id="posts"></div>
+</div>
+
+<!-- NAV -->
+<div class="nav" id="nav" style="display:none;">
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('ai')">AI</button>
+  <button onclick="show('courses')">Courses</button>
+  <button onclick="show('community')">Community</button>
+</div>
+
+<script>
+
+// SPLASH → SIGNIN
+setTimeout(()=>{ show('signin'); },3000);
+
+// NAVIGATION
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  if(id === "home"){
+    let name = localStorage.getItem("username") || "";
+
+    home.innerHTML = `
+      <h2>Small Beginnings 🌱</h2>
+      <p style="line-height:1.6;">
+      ${name}, this is where your journey becomes real.  
+
+      Every lesson you take builds knowledge.  
+      Every action you take builds discipline.  
+
+      Over time, small steps create powerful results.  
+
+      Stay focused. Stay consistent.  
+      You are building something meaningful.
+      </p>
+    `;
+  }
+
+  if(id === "courses"){
+    showCourses();
+  }
+}
+
+// ENTER APP
+function enter(){
+  let name = user.value;
+  localStorage.setItem("username", name);
+
+  nav.style.display = "flex";
+  show('home');
+}
+
+// 🤖 BALANCED AI
+function askAI(){
+  let q = aiInput.value.trim();
+  let name = localStorage.getItem("username") || "friend";
+
+  if(q === ""){
+    aiOutput.innerText = "Please ask something so I can assist you.";
+    return;
+  }
+
+  let lower = q.toLowerCase();
+  let response = "";
+
+  if(lower.includes("hi") || lower.includes("hello")){
+    response = `Hello ${name}. How can I assist you today?`;
+  }
+
+  else if(lower.includes("tired")){
+    response = `${name}, it sounds like you need rest.  
+
+Taking a break can help you regain clarity and energy.  
+Once you recover, you can approach things more effectively.`;
+  }
+
+  else if(lower.includes("business") || lower.includes("idea")){
+    response = `${name}, that’s a strong focus.  
+
+A good business starts with solving a real problem.  
+Understand your audience, test your idea, and improve consistently.  
+
+Execution is what turns ideas into results.`;
+  }
+
+  else if(lower.includes("can i") || lower.includes("will it work")){
+    response = `${name}, yes — it is possible.  
+
+But success depends on planning, consistency, and action.  
+Start small, stay disciplined, and adapt as you go.`;
+  }
+
+  else if(lower.includes("?")){
+    response = `${name}, that’s a thoughtful question.  
+
+Break it down, understand the situation, and evaluate your options.  
+Clear thinking leads to better decisions.`;
+  }
+
+  else{
+    response = `${name}, I understand.  
+
+Let’s approach this step by step.  
+Clarity and focus will help you move forward.`;
+  }
+
+  aiOutput.innerText = response;
+}
+
+// 📘 GENERATE 30 COURSES
+function showCourses(){
+  let list = "";
+  for(let i=1;i<=30;i++){
+    list += `<button onclick="openLesson(${i})">Course ${i}</button>`;
+  }
+  courseList.innerHTML = list;
+}
+
+// 📖 LONG LESSONS
+function openLesson(num){
+  show('lesson');
+
+  let text = "";
+
+  for(let i=1;i<=30;i++){
+    text += `
+    <p>
+    ${i}. In this section, you are learning how to think and act effectively in real-world situations.  
+
+    Growth comes from discipline, consistency, and the ability to adapt.  
+    You must learn to observe, analyze, and take action even when uncertain.  
+
+    Over time, these habits build confidence and create real progress.  
+
+    Stay focused and continue developing your mindset step by step.
+    </p>
+    `;
+  }
+
+  lessonTitle.innerText = "Course " + num;
+  lessonText.innerHTML = text;
+}
+
+// QUIZ
+let questions=[
+  "What builds success?",
+  "Why is consistency important?",
+  "What should you focus on daily?",
+  "Why start small?",
+  "What creates growth?"
+];
+
+let qIndex=0;
+
+function startQuiz(){
+  qIndex=0;
+  show('quiz');
+  loadQ();
+}
+
+function loadQ(){
+  if(qIndex>=questions.length){
+    show('courses');
+    return;
+  }
+
+  qTitle.innerText = questions[qIndex];
+}
+
+function nextQ(){
+  qIndex++;
+  loadQ();
+}
+
+// 🌍 COMMUNITY
+function post(){
+  let text = postInput.value;
+  let name = localStorage.getItem("username") || "User";
+
+  if(text === "") return;
+
+  let div = document.createElement("div");
+  div.className = "post";
+  div.innerHTML = `<strong>${name}</strong><p>${text}</p>`;
+
+  posts.appendChild(div);
+}
+
+</script>
+
+</body>
+</html>
